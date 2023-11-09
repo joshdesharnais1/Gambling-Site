@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="loginstyle.css">
+  <title>SweepStakes Home</title>
+</head>
+<body>
+  <div class="top-bar">
+    <h1 class="Numbers-text">NUMBERS</h1>
+    <div class="menu-icon" id="menu-icon">&#9776;</div>
+    <div class="menu-dropdown" id="menu-dropdown">
+      <a href="index.html" id="register-link">Login</a>
+      <a href="register.html" id="admin-link">Register</a>
+    </div>
+  </div>
+  <div class="content-container">
+    <h2>Admin Login</h2>
+    <form id="admin">
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <div class="button-container">
+      <button type="submit">Login</button>
+      </div>
+    </form>
+  <p id="login-error" style="color: red;"></p>
+  </div>
+  <script src="adminlogin.js"></script>
+</body>
+</html>

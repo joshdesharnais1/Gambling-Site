@@ -1,0 +1,56 @@
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px; /* Add padding to reduce the gap */
+    margin-top: 10px; /* Add margin to separate it from the top bar */
+    height: 100vh;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    margin-left: 0;
+  }
+  
+  
+  .button-container button {
+    margin-right: 10px;
+  }
+  
+  body {
+    background-image: url('simplistic.jpg'); /* Replace with your image file name */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-attachment: fixed;
+    font-family: 'Arial', sans-serif;
+    color: #ffffff;
+  }
+
+  button {
+    width: 100%; 
+    padding: 10px;
+    background-color: #070707;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #414142;
+  }
+  
+  /* Increase the font size of the "Register" text */
+  h2 {
+    font-family: 'Agbalumo', sans-serif;
+    font-weight: 700;
+    font-size: 36px; /* Adjust the font size as needed */
+  }
+
+  @font-face {
+    font-family: 'Agbalumo';
+    src: url('Agbalumo-Regular.ttf') format('truetype');
+  }

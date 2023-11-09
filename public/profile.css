@@ -1,0 +1,136 @@
+.top-bar {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+  }
+  
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-right: 25%
+}
+
+.button-container button {
+  margin-right: 10px;
+}
+button {
+  width: 50%; 
+  padding: 10px;
+  background-color: #070707;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #414142;
+}
+  
+  body {
+    background-image: url('simplistic.jpg'); /* Replace with your image file name */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-attachment: fixed;
+    font-family: 'Arial', sans-serif;
+    color: #ffffff;
+  }
+  
+.content-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  grid-gap: 10px;
+  padding: 20px;
+}
+
+.user-info, .account-balance, .total-sweepstakes, .number-of-entries, .total-sweepstakes-prize {
+  border: 5px solid #ffffff; /* Add a border */
+  padding: 10px; /* Add some padding inside each section */
+  border-radius: 10px;
+}
+
+.user-info {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.account-balance {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.total-sweepstakes {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+}
+
+number-of-entries {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+
+total-sweepstakes-prize {
+  grid-column: 1 / 3;
+  grid-row: 3 / 4;
+}
+@font-face {
+  font-family: 'Agbalumo';
+  src: url('Agbalumo-Regular.ttf') format('truetype');
+}
+
+h1 {
+  font-family: 'Agbalumo', sans-serif; /* Use 'Agbalumo' as the custom font and a fallback sans-serif font */
+}
+h3 {
+  font-family: 'Agbalumo', sans-serif; /* Use 'Agbalumo' as the custom font and a fallback sans-serif font */
+}
+
+.Numbers-text {
+  font-family: 'Agbalumo', sans-serif;
+  text-align: auto;
+  margin-left: auto; /* Move the text to the right */
+  margin-right: 45%; /* Move the text to the center */
+  color: white;
+}
+
+
+.menu-dropdown.show {
+  display: block;
+}
+.menu-icon {
+  font-size: 48px;
+  cursor: pointer;
+  margin-left: auto; /* Move the menu icon to the right */
+  color: #fbf8f8; /* Change the color */
+  padding: 0 20px; /* Add some padding to the right */
+}
+
+.menu-icon:hover {
+  color: #0a0a0a; /* Change the color on hover */
+}
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  top: 13%;
+  right: 1%;
+  background-color: #fff; /* Change the background color */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  z-index: 1; /* Ensure it appears above other content */
+}
+
+.menu-dropdown a {
+  display: block;
+  text-decoration: none;
+  color: #333; /* Change link color */
+  margin: 5px 0;
+}
+
+.menu-dropdown a:hover {
+  color: #555; /* Change link color on hover */
+}

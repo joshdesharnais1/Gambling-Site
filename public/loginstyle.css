@@ -1,0 +1,151 @@
+.top-bar {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  padding: 20px 0; /* Add padding to reduce the gap */
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px; /* Add padding to reduce the gap */
+  margin-top: 10px; /* Add margin to separate it from the top bar */
+  height: 100vh;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-right: 25%
+}
+
+
+.button-container button {
+  margin-right: 10px;
+}
+
+.white-text {
+  color: white;
+  margin-left: 0; /* Remove any left margin */
+}
+
+body {
+  background-image: url('simplistic.jpg'); /* Replace with your image file name */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-attachment: fixed;
+  font-family: 'Arial', sans-serif;
+  color: #ffffff;
+}
+
+.login-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+.logo {
+  font-size: 24px;
+  color: #2980B9;
+}
+
+form {
+  margin-top: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: #2980B9;
+}
+
+button {
+  width: 50%; 
+  padding: 10px;
+  background-color: #070707;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #414142;
+}
+
+.error-message {
+  color: #FF5733;
+  margin: 10px 0;
+}
+
+/* Increase the font size of the "Register" text */
+h2 {
+  font-family: 'Agbalumo', sans-serif;
+  font-weight: 700;
+  font-size: 36px; /* Adjust the font size as needed */
+}
+.menu-dropdown {
+  display: none;
+}
+
+.menu-dropdown.show {
+  display: block;
+}
+.menu-icon {
+  font-size: 48px;
+  cursor: pointer;
+  margin-left: auto; /* Move the menu icon to the right */
+  color: #fbf8f8; /* Change the color */
+  padding: 0 20px; /* Add some padding to the right */
+}
+
+
+.menu-icon:hover {
+  color: #0a0a0a; /* Change the color on hover */
+}
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  top: 13%;
+  right: 1%;
+  background-color: #fff; /* Change the background color */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  z-index: 1; /* Ensure it appears above other content */
+}
+
+.menu-dropdown a {
+  display: block;
+  text-decoration: none;
+  color: #333; /* Change link color */
+  margin: 5px 0;
+}
+
+.menu-dropdown a:hover {
+  color: #555; /* Change link color on hover */
+}
+
+.Numbers-text {
+  
+  text-align: left;
+  margin-left: 5%; /* Move the text to the right */
+  margin-right: auto; /* Move the text to the center */
+}
+@font-face {
+  font-family: 'Agbalumo';
+  src: url('Agbalumo-Regular.ttf') format('truetype');
+}

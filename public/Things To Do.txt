@@ -1,0 +1,2 @@
+add log out button
+make winner show up on profile page
