@@ -4,7 +4,8 @@ const Sequelize = require('sequelize');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const app = express();
 const port = 3000;
-
+const crypto = require('crypto');
+const secret = crypto.randomBytes(32).toString('hex');
 app.use(express.json());
 
 // Serve static files from the "public" directory
@@ -23,13 +24,17 @@ const sequelize = new Sequelize({
   });
   app.use(
     session({
-      secret: 'mysecret', // Replace with your secret key
+      secret: secret,
       resave: false,
       saveUninitialized: true,
       store: sessionStore,
+      cookie: {
+        sameSite: 'Lax',
+      },
     })
   );
-
+  
+  
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
@@ -89,35 +94,161 @@ app.post('/register', async(req, res) => {
     });
 });
 // Login route
-app.get('/user-info', async (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({
-            error: 'Unauthorized'
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+  
+    // Fetch user data from the database
+    db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
+      if (err) {
+        console.error('Error during login:', err);
+        res.status(500).json({ error: 'Database error' });
+        return;
+      }
+  
+      if (!row) {
+        console.log('Invalid username during login:', username);
+        res.status(401).json({ error: 'Invalid username or password' });
+        return;
+      }
+  
+      // Check the hashed password
+      const passwordMatch = await bcrypt.compare(password, row.password);
+  
+      if (passwordMatch) {
+        console.log('Login successful:', username);
+  
+        // Set session data here after successful login
+        req.session.user = {
+          username: username,
+          // You can add more user data if needed
+        };
+  
+        // Continue with your response
+        // Fetch user data from the database
+        db.get('SELECT username, account_balance FROM users WHERE username = ?', [username], (err, user) => {
+          if (err) {
+            console.error('Error fetching user data:', err);
+            return res.status(500).json({ error: 'Failed to fetch user data' });
+          }
+          // Send the user data as a response
+          res.json({
+            message: 'Login successful',
+            user,
+          });
+        });
+      } else {
+        console.log('Invalid password during login:', username);
+        res.status(401).json({ error: 'Invalid username or password' });
+      }
+    });
+  });  
+//Log out route
+app.get('/logout', (req, res) => {
+    // Destroy the user's session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        return res.status(500).json({ error: 'Failed to logout' });
+      }
+  
+      // Redirect to the index page or another desired destination
+      res.redirect('/index.html');
+    });
+  });  
+  app.get('/user-info', async (req, res) => {
+    try {
+        if (!req.session.user || !req.session.user.username) {
+            return res.status(401).json({
+                error: 'Unauthorized'
+            });
+        }
+
+        const username = req.session.user.username;
+
+        // Query the database to fetch user data based on the username
+        db.get('SELECT username, account_balance, total_sweepstakes_entered FROM users WHERE username = ?', [username], (err, user) => {
+            if (err) {
+                console.error('Error fetching user data:', err);
+                return res.status(500).json({
+                    error: 'Failed to fetch user data'
+                });
+            }
+            if (!user) {
+                return res.status(404).json({
+                    error: 'User not found'
+                });
+            }
+
+            res.json(user);
+        });
+    } catch (err) {
+        console.error('Error during user info retrieval:', err);
+        res.status(500).json({
+            error: 'Internal server error'
         });
     }
-
-    const username = req.session.username;
-
-    // Query the database to fetch user data based on the username
-    db.get('SELECT username, account_balance, total_sweepstakes_entered FROM users WHERE username = ?', [username], (err, user) => {
-        if (err) {
-            console.error('Error fetching user data:', err);
-            return res.status(500).json({
-                error: 'Failed to fetch user data'
-            });
-        }
-        if (!user) {
-            return res.status(404).json({
-                error: 'User not found'
-            });
-        }
-
-        res.json(user);
-    });
 });
 // Add a route to handle adding balance
 app.post('/add-balance', async (req, res) => {
-    if (!req.session.username) {
+    try {
+        if (!req.session.user || !req.session.user.username) {
+            return res.status(401).json({
+                error: 'Unauthorized'
+            });
+        }
+        const {
+            username,
+            amount
+        } = req.body;
+
+        if (!username || !amount) {
+            return res.status(400).json({
+                error: 'Both username and amount are required.'
+            });
+        }
+
+        // Query the database to fetch the user's current balance
+        db.get('SELECT account_balance FROM users WHERE username = ?', [username], async (err, user) => {
+            if (err) {
+                console.error('Error fetching user data:', err);
+                return res.status(500).json({
+                    error: 'Failed to fetch user data'
+                });
+            }
+            if (!user) {
+                return res.status(404).json({
+                    error: 'User not found'
+                });
+            }
+
+            const currentBalance = user.account_balance;
+            const updatedBalance = currentBalance + amount;
+
+            // Update the user's balance in the database
+            db.run('UPDATE users SET account_balance = ? WHERE username = ?', [updatedBalance, username], (err) => {
+                if (err) {
+                    console.error('Error updating user balance:', err);
+                    return res.status(500).json({
+                        error: 'Failed to update user balance'
+                    });
+                }
+
+                // Send the updated balance as a response
+                res.json({
+                    message: 'Balance added successfully',
+                    updatedBalance
+                });
+            });
+        });
+    } catch (err) {
+        console.error('Error during add balance:', err);
+        res.status(500).json({
+            error: 'Internal server error'
+        });
+    }
+});
+app.post('/participate-sweepstakes', async (req, res) => {
+    if (!req.session.user || !req.session.user.username) {
         return res.status(401).json({
             error: 'Unauthorized'
         });
@@ -127,58 +258,6 @@ app.post('/add-balance', async (req, res) => {
         username,
         amount
     } = req.body;
-
-    if (!username || !amount) {
-        return res.status(400).json({
-            error: 'Both username and amount are required.'
-        });
-    }
-
-    // Query the database to fetch the user's current balance
-    db.get('SELECT account_balance FROM users WHERE username = ?', [username], async (err, user) => {
-        if (err) {
-            console.error('Error fetching user data:', err);
-            return res.status(500).json({
-                error: 'Failed to fetch user data'
-            });
-        }
-        if (!user) {
-            return res.status(404).json({
-                error: 'User not found'
-            });
-        }
-
-        const currentBalance = user.account_balance;
-        const updatedBalance = currentBalance + amount;
-
-        // Update the user's balance in the database
-        db.run('UPDATE users SET account_balance = ? WHERE username = ?', [updatedBalance, username], (err) => {
-            if (err) {
-                console.error('Error updating user balance:', err);
-                return res.status(500).json({
-                    error: 'Failed to update user balance'
-                });
-            }
-
-            // Send the updated balance as a response
-            res.json({
-                message: 'Balance added successfully',
-                updatedBalance
-            });
-        });
-    });
-});
-app.post('/participate-sweepstakes', async (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({
-            error: 'Unauthorized'
-        });
-    }
-
-    const {
-        amount
-    } = req.body;
-    const username = req.session.username;
 
     if (!amount) {
         return res.status(400).json({
@@ -231,12 +310,6 @@ app.post('/participate-sweepstakes', async (req, res) => {
     });
 });
 app.post('/admin', async (req, res) => {
-    if (!req.session.username) {
-        return res.status(401).json({
-            error: 'Unauthorized'
-        });
-    }
-
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -280,6 +353,10 @@ app.post('/admin', async (req, res) => {
                     user
                 });
             });
+            req.session.user = {
+                username: username,
+                // You can add more user data if needed
+              };
         } else {
             console.log('Invalid password during login:', username);
             res.status(401).json({
@@ -289,7 +366,7 @@ app.post('/admin', async (req, res) => {
     });
 });
 app.get('/getRandomUsername', async (req, res) => {
-    if (!req.session.username) {
+    if (!req.session.user || !req.session.user.username) {
         return res.status(401).json({
             error: 'Unauthorized'
         });
@@ -358,7 +435,7 @@ app.get('/getRandomUsername', async (req, res) => {
     }
 });
 app.post('/resetSweepstakes', async(req, res) => {
-    if (!req.session.username) {
+    if (!req.session.user || !req.session.user.username) {
         return res.status(401).json({
             error: 'Unauthorized'
         });
@@ -386,7 +463,7 @@ app.post('/resetSweepstakes', async(req, res) => {
     }
 });
 app.post('/addSweepstakesBalanceToAccount', async(req, res) => {
-    if (!req.session.username) {
+    if (!req.session.user || !req.session.user.username) {
         return res.status(401).json({
             error: 'Unauthorized'
         });
@@ -456,7 +533,7 @@ app.post('/addSweepstakesBalanceToAccount', async(req, res) => {
     });
 });
 app.post('/zeroAccountBalances', async(req, res) => {
-    if (!req.session.username) {
+    if (!req.session.user || !req.session.user.username) {
         return res.status(401).json({
             error: 'Unauthorized'
         });
@@ -476,4 +553,29 @@ app.post('/zeroAccountBalances', async(req, res) => {
         });
     });
 });
+//Get Sweepstakes Route
+app.get('/get-sweepstakes-values', (req, res) => {
+    if (!req.session.user || !req.session.user.username) {
+        return res.status(401).json({
+            error: 'Unauthorized'
+        });
+    }
+    // Check if the user is authenticated by verifying the session
+      db.get('SELECT SUM(total_sweepstakes_entered) AS total FROM users', [], (err, row) => {
+        if (err) {
+          console.error('Error fetching total sweepstakes values:', err);
+          return res.status(500).json({
+            error: 'Failed to fetch total sweepstakes values'
+          });
+        }
+  
+        const totalSweepstakesValue = row.total || 0;
+  
+        // Return the sum as a JSON response
+        res.json({
+          total_sweepstakes_entered: totalSweepstakesValue
+        });
+      });
+  });
+  
 

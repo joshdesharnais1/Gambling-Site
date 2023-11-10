@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
               headers: {
                 'Content-Type': 'application/json',
               },
+              credentials: 'include',
             });
       
             if (response.ok) {
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
             });
     
             if (response.ok) {
@@ -73,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include',
                     body: JSON.stringify({ randomUsername }),
                 });
     
@@ -101,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
               headers: {
                   'Content-Type': 'application/json',
               },
+              credentials: 'include',
           });
   
           if (response.ok) {
